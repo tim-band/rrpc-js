@@ -1,0 +1,41 @@
+<html>
+<head>
+  <!-- script src="../dist/rrpc.min.js" type="text/javascript"></script -->
+  <script src="../rrpc.js" type="text/javascript"></script>
+  <script>
+    rrpc.initialize();
+    function getX() {
+      return document.getElementById("x-input").value;
+    }
+    function getY() {
+      return document.getElementById("y-input").value;
+    }
+    function setResult(v) {
+      document.getElementById("result").value = v;
+    }
+    function add() {
+      rrpc.call("add", {x: getX(), y: getY()}, setResult);
+    }
+    function multiply() {
+      rrpc.call("multiply", {x: getX(), y: getY()}, setResult);
+    }
+    function broken() {
+      rrpc.call("broken", {x: getX()}, setResult);
+    }
+    function reset() {
+      document.getElementById("x-input").value = "";
+      document.getElementById("y-input").value = "";
+    }
+  </script>
+</head>
+<body>
+  <p>x:<input id="x-input" type="text"></p>
+  <p>y:<input id="y-input" type="text"></p>
+  <p>result:<input id="result" type="text" value=""></p>
+  <p>error:<input id="error" type="text" value=""></p>
+  <p><input id="reset" type="button" value="reset" onclick="reset()"></p>
+  <p><input id="add" type="button" value="add" onclick="add()"></p>
+  <p><input id="multiply" type="button" value="multiply" onclick="multiply()"></p>
+  <p><input id="broken" type="button" value="break" onclick="broken()"></p>
+</body>
+</html>

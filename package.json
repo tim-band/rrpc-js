@@ -1,0 +1,29 @@
+{
+  "name": "rrpc",
+  "version": "0.1.0",
+  "description": "Calls R functions via the R package rrpc.",
+  "main": "rrpc.js",
+  "scripts": {
+    "build": "babel rrpc.js --out-file dist/rrpc.min.js --minified --no-comments",
+    "test": "npm run build && mocha test"
+  },
+  "keywords": [
+    "rrpc",
+    "R",
+    "JsonRPC"
+  ],
+  "author": "Tim Band",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^8.0.1",
+    "@babel/cli": "7.10.1",
+    "@babel/core": "7.10.2",
+    "@babel/generator": "7.10.2",
+    "@babel/preset-env": "7.10.2",
+    "babel-plugin-minify-mangle-names": "0.5.0",
+    "selenium-webdriver": "4.0.0-alpha.7",
+    "webworker-threads": "0.7.17",
+    "ws": "7.3.0"
+  }
+}

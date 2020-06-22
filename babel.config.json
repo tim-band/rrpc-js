@@ -1,0 +1,20 @@
+{
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "edge": "12",
+          "firefox": "11",
+          "chrome": "4",
+          "safari": "5",
+          "ie": "10"
+        },
+        "forceAllTransforms": true,
+        "useBuiltIns": "usage",
+        "corejs": "3.6.4"
+      }
+    ]
+  ],
+  "plugins": ["minify-mangle-names"]
+}
