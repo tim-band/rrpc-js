@@ -22,7 +22,7 @@ describe('rrpc', function () {
   after(async function () {
     // this function is async to make Mocha wait until
     // all the tests have resolved before it calls it
-    rProcess.kill('SIGHUP');
+    rProcess.kill('SIGTERM');
     driver.quit();
   })
 
