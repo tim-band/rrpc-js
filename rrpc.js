@@ -18,7 +18,7 @@ window.rrpc = function () {
     }
     const oldCallbacks = callbacks;
     callbacks = {};
-    for (c in oldCallbacks) {
+    for (var c in oldCallbacks) {
       oldCallbacks[c](null, new Error('WebSocket torn down'));
     }
   }
