@@ -33,7 +33,9 @@ window.rrpc = function () {
   }
 
   function initializeWebSocket(openCallback, errorCallback, host) {
-    web_socket = new WebSocket("ws://" + host + "/websocket");
+    var protocol = window.location.protocol === "https:"? "wss://" : "ws://";
+    // any path ending in /websocket/ seems to be OK
+    web_socket = new WebSocket(protocol + host + window.location.pathname + "x/websocket/");
     if (initialErrorCallback) {
       web_socket.onerror = errorCallback;
     }
