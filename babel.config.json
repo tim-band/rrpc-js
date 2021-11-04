@@ -9,10 +9,7 @@
           "chrome": "4",
           "safari": "5",
           "ie": "10"
-        },
-        "forceAllTransforms": true,
-        "useBuiltIns": "usage",
-        "corejs": "3.6.4"
+        }
       }
     ]
   ],

@@ -2,6 +2,7 @@ window.rrpc = function () {
 
   var web_socket = null;
   var callbacks = {};
+  var infoCallbacks = {};
   var currentId = 1;
   const jsonrpc = "2.0";
   var initialErrorCallback = null;
@@ -18,17 +19,32 @@ window.rrpc = function () {
     }
     const oldCallbacks = callbacks;
     callbacks = {};
+    infoCallbacks = {};
     for (var c in oldCallbacks) {
-      oldCallbacks[c](null, new Error('WebSocket torn down'));
+      oldCallbacks[c](null, new Error("WebSocket torn down"));
     }
   }
 
   function processMessage(event) {
     const data = JSON.parse(event.data);
-    if (data.id in callbacks) {
-      const cb = callbacks[data.id];
-      delete callbacks[data.id];
-      cb(data.result, data.error);
+    const id = data.id[0];
+    if ("jsonrpc" in data) {
+      if (id in callbacks) {
+        const cb = callbacks[id];
+        delete callbacks[id];
+        delete infoCallbacks[id];
+        cb(data.result, data.error);
+      }
+    } else if ("type" in data) {
+      const call = data.type[0];
+      const callbackMap = infoCallbacks[id];
+      if (call in callbackMap) {
+        if (call === "progress") {
+          callbackMap.progress(data.numerator[0], data.denominator[0]);
+        } else if (call === "info") {
+          callbackMap.info(data.text[0]);
+        }
+      }
     }
   }
 
@@ -70,15 +86,17 @@ window.rrpc = function () {
       initializeWebSocket(openCallback, errorCallback, host);
     },
 
-    call: function (method, params, callback) {
+    call: function (method, params, callback, infoCallbackMap) {
       const id = nextId();
       if (callback) {
         callbacks[id] = callback;
+        infoCallbacks[id] = typeof(infoCallbackMap) === "object"?
+          infoCallbackMap : {};
       }
       web_socket.send(JSON.stringify({ jsonrpc, method, params, id }));
     },
 
-    destroy: function (callback) {
+    destroy: function () {
       tearDown();
     },
 

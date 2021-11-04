@@ -27,14 +27,26 @@ repo's releases page). Then these R functions can be called like this:
 <script src="../dist/rrpc.min.js" type="text/javascript"></script>
 <script>
   rrpc.initialize();
-  function setResult(v) {
+  function setResult(v, error) {
     document.getElementById("result").value = v;
+    if (error) {
+      document.getElementById("error").value = error;
+    }
+  }
+  function setProgress(numerator, denominator) {
+    var pc = Math.ceil(numerator[0] * 100 / denominator[0]) + "%";
+    document.getElementById("progress-bar").style.width = pc;
   }
   function add(x, y) {
     rrpc.call("add", {x: x, y: y}, setResult);
   }
   function multiply(x, y) {
     rrpc.call("multiply", {x: x, y: y}, setResult);
+  }
+  function doSomethingSlow(x, y) {
+    rrpc.call("somethingSlow", {x: x, y: y}, setResult, {
+      progress: setProgress
+    });
   }
 </script>
 ```

@@ -1,17 +1,33 @@
 <html>
 <head>
-  <Sscript src="../dist/rrpc.min.js" type="text/javascript"></script>
-  <!-- script src="../rrpc.js" type="text/javascript"></script -->
+  <!-- script src="../dist/rrpc.min.js" type="text/javascript"></script -->
+  <script src="../rrpc.js" type="text/javascript"></script>
   <script>
-    rrpc.initialize();
+    rrpc.initialize(function() {
+      // make controls appear to signal to Selenium that we are ready
+      document.getElementById("controls").setAttribute("style", "");
+    });
     function getX() {
       return document.getElementById("x-input").value;
     }
     function getY() {
       return document.getElementById("y-input").value;
     }
-    function setResult(v) {
-      document.getElementById("result").value = v;
+    function setResult(v, error) {
+      if (error) {
+        console.error(error);
+        document.getElementById("error").value = error[0];
+      }
+      if (typeof(v) === "object" && "data" in v && v.data) {
+        document.getElementById("result").value = v.data[0];
+      }
+    }
+    function setProgress(n, d) {
+      var pc = Math.ceil(n * 100 / d);
+      document.getElementById("progress-bar").style.width = pc + "%";
+    }
+    function setText(text) {
+      document.getElementById("info-text").textContent = text;
     }
     function add() {
       rrpc.call("add", {x: getX(), y: getY()}, setResult);
@@ -22,20 +38,45 @@
     function broken() {
       rrpc.call("broken", {x: getX()}, setResult);
     }
+    function slow() {
+      rrpc.call("slow", {x: getX(), y: getY()}, setResult, {
+        progress: setProgress
+      });
+    }
+    function text() {
+      rrpc.call("text", {x: getX(), y: getY()}, setResult, {
+        info: setText
+      });
+    }
     function reset() {
       document.getElementById("x-input").value = "";
       document.getElementById("y-input").value = "";
+      document.getElementById("error").value = "";
+      document.getElementById("result").value = "";
+      setProgress(0, 1);
+      setText("");
     }
   </script>
 </head>
 <body>
-  <p>x:<input id="x-input" type="text"></p>
-  <p>y:<input id="y-input" type="text"></p>
-  <p>result:<input id="result" type="text" value=""></p>
-  <p>error:<input id="error" type="text" value=""></p>
-  <p><input id="reset" type="button" value="reset" onclick="reset()"></p>
-  <p><input id="add" type="button" value="add" onclick="add()"></p>
-  <p><input id="multiply" type="button" value="multiply" onclick="multiply()"></p>
-  <p><input id="broken" type="button" value="break" onclick="broken()"></p>
+  <div id="controls" style="display: none;">
+    <p>x:<input id="x-input" type="text"></p>
+    <p>y:<input id="y-input" type="text"></p>
+    <p>result:<input id="result" type="text" value=""></p>
+    <p>error:<input id="error" type="text" value=""></p>
+    <div style="border:1px grey;">
+      <div id="progress-bar" style="background-color:green;height:24px;width:0%;">
+      </div>
+    </div>
+    <div style="border:1px black;">
+      <p id='info-text'></p>
+    </div>
+    <p><input id="reset" type="button" value="reset" onclick="reset()"></p>
+    <p><input id="add" type="button" value="add" onclick="add()"></p>
+    <p><input id="multiply" type="button" value="multiply" onclick="multiply()"></p>
+    <p><input id="broken" type="button" value="break" onclick="broken()"></p>
+    <p><input id="slow" type="button" value="slow" onclick="slow()"></p>
+    <p><input id="text" type="button" value="text" onclick="text()"></p>
+  </div>
 </body>
 </html>
