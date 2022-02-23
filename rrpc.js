@@ -62,10 +62,8 @@ window.rrpc = function () {
         // try to re-connect
         initializeWebSocket(openCallback,
           function (event) {
-            // If we are trying to re-connect because the other end has gone down,
-            // we just have to die silently.
-            if (event.error.code !== "ECONNREFUSED") {
-              initialErrorCallback(event.error);
+            if(event.type === 'error') {
+              initialErrorCallback(event);
             }
           },
           host);
