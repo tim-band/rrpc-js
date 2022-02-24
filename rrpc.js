@@ -60,7 +60,7 @@ window.rrpc = function () {
       web_socket.onclose = function (event) {
         tearDown();
         // try to re-connect
-        initializeWebSocket(openCallback, initialErrorCallback, host);
+        initializeWebSocket(null, initialErrorCallback, host);
       }
       if (openCallback) {
         openCallback();
