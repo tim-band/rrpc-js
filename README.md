@@ -27,7 +27,7 @@ repo's releases page). Then these R functions can be called like this:
 <script src="../dist/rrpc.min.js" type="text/javascript"></script>
 <script>
   rrpc.initialize();
-  function setResult(v, error) {
+  function setResult(v, error, code) {
     document.getElementById("result").value = v;
     if (error) {
       document.getElementById("error").value = error;
@@ -50,3 +50,20 @@ repo's releases page). Then these R functions can be called like this:
   }
 </script>
 ```
+
+If you use the `code` argument on your error function (the second argument to
+`rrpc.call(fn, errorfn)`), it can hold one of a number of integer values depending
+on the error type:
+
+| error value | meaning |
+| :--- | :--- |
+| -1 | web socket failed to reconnect after teardown |
+| -32000 | The R function failed |
+| -32601 | No such method |
+| -32700 | RRPC has failed to construct correct JSON, sorry |
+
+## development
+
+Build the minified JavaScript (as `dist\rrpc.min.js`) with `npm run build`.
+
+Run tests with `npm test`.

@@ -47,6 +47,12 @@ describe('rrpc', function () {
     await awaitResult(driver, "62.00000015");
   });
 
+  it('is detects R errors', async function () {
+    this.timeout(10000);
+    await clickButton(driver, "broken");
+    await awaitError(driver, "broken function called");
+  });
+
   it('gets progress', async function() {
     this.timeout(10000);
     await clickButton(driver, "slow");
@@ -59,8 +65,10 @@ describe('rrpc', function () {
 
   it('gets information text', async function() {
     this.timeout(10000);
+    await setXY(driver, 5, 6);
     await clickButton(driver, "text");
     await awaitInfoText(driver, "some information");
+    await awaitResult(driver, "30");
   });
 });
 
@@ -92,12 +100,32 @@ async function reset(driver) {
   await driver.findElement(By.id("reset")).click();
 }
 
-async function awaitResult(driver, value) {
-  const element = await driver.findElement(By.id("result"));
+async function awaitValue(driver, elementId, value, valueFromElement) {
+  const element = await driver.findElement(By.id(elementId));
   await driver.wait(async function() {
-    const elementValue = await element.getAttribute("value");
-    return elementValue === value;
-  }, 10000);
+    return value === await valueFromElement(element);
+  }, 3000);
+}
+
+async function getText(element) {
+   const t = await element.getText();
+   return t.trim();
+}
+
+function getValue(element) {
+  return element.getAttribute("value");
+}
+
+function awaitResult(driver, value) {
+  return awaitValue(driver, "result", value, getValue);
+}
+
+function awaitError(driver, value) {
+  return awaitValue(driver, "error", value, getValue);
+}
+
+function awaitInfoText(driver, value) {
+  return awaitValue(driver, "info-text", value, getText);
 }
 
 async function awaitProgress(driver, value) {
@@ -112,13 +140,5 @@ async function awaitProgress(driver, value) {
       }
     }
     return false;
-  }, 10000);
-}
-
-async function awaitInfoText(driver, value) {
-  const element = await driver.findElement(By.id("info-text"));
-  await driver.wait(async function() {
-    const elementValue = await element.getText();
-    return elementValue.trim() === value;
-  }, 10000);
+  }, 3000);
 }
