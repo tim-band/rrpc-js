@@ -16,7 +16,7 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "^8.0.1",
+    "mocha": "^8.4.0",
     "@babel/cli": "7.10.1",
     "@babel/core": "7.10.2",
     "@babel/generator": "7.10.2",
